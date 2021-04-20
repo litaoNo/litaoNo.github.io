@@ -178,9 +178,61 @@
 <h2 id="符号引用"><a href="#符号引用" class="headerlink" title="符号引用"></a>符号引用</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;一个 java 类（假设为 People 类）被编译成一个 class 文件时，如果 People 类引用了 Tool 类，但是在编译时 People 类并不知道引用类的实际内存地址，因 此只能使用符号引用来代替。而在类装载器装载 People 类时，此时可以通过虚拟机获取 Tool 类的实际内存地址，因此便可以既将符号 org.simple.Tool 替换为 Tool 类的实际内存地址， 及直接引用地址。即在编译时用符号引用来代替引用类，在加载时再通过虚拟机获取该引用类的实际地址. 以一组符号来描述所引用的目标，符号可以是任何形式的字面量，只要使用时能无歧义地定位到目标即可。符号引用与虚拟机实现的内存布局是无关的， 引用的目标不一定已经加载到内存中。</p>
 <h2 id="常量池与运行时常量池"><a href="#常量池与运行时常量池" class="headerlink" title="常量池与运行时常量池"></a>常量池与运行时常量池</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;而当类加载到内存中后，JVM 就会将 class 文件常量池中的内容存放到运行时的常量池中；在解析阶段，JVM 会把符号引用替换为直接引用（对象 的索引值）。<br>&nbsp;&nbsp;&nbsp;&nbsp;例如，类中的一个字符串常量在 class 文件中时，存放在 class 文件常量池中的；在 JVM 加载完类之后，JVM 会将这个字符串常量放到运行时常量 池中，并在解析阶段，指定该字符串对象的索引值。运行时常量池是全局共享的，多个类共用一个运行时常量池，class 文件中常量池多个相同的字符串 在运行时常量池只会存在一份。<br>&nbsp;&nbsp;&nbsp;&nbsp;常量池有很多概念，包括运行时常量池、class 常量池、字符串常量池。 虚拟机规范只规定以上区域属于方法区，并没有规定虚拟机厂商的实现。 严格来说是静态常量池和运行时常量池，静态常量池是存放字符串字面量、符号引用以及类和方法的信息，而运行时常量池存放的是运行时一些直接引 用。运行时常量池是在类加载完成之后，将静态常量池中的符号引用值转存到运行时常量池中，类在解析之后，将符号引用替换成直接引用。 运行时常量池在 JDK1.7 版本之后，就移到堆内存中了，这里指的是物理空间，而逻辑上还是属于方法区（方法区是逻辑分区）。</p>
 <h2 id="元空间"><a href="#元空间" class="headerlink" title="元空间"></a>元空间</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;方法区与堆空间类似，也是一个共享内存区，所以方法区是线程共享的。假如两个线程都试图访问方法区中的同一个类信息，而这个类还没有装入 JVM， 那么此时就只允许一个线程去加载它，另一个线程必须等待。<br>&nbsp;&nbsp;&nbsp;&nbsp;在 HotSpot 虚拟机、Java7 版本中已经将永久代的静态变量和运行时常量池转移到了堆中，其余部分则存储在 JVM 的非堆内存中，而 Java8 版本 已经将方法区中实现的永久代去掉了，并用元空间（class metadata）代替了之前的永久代，并且元空间的存储位置是本地内存。<br><strong>元空间大小参数：</strong><br>&nbsp;&nbsp;&nbsp;&nbsp;jdk1.7 及以前（初始和最大值）：-XX:PermSize；-XX:MaxPermSize；<br>&nbsp;&nbsp;&nbsp;&nbsp;jdk1.8 以后（初始和最大值）：-XX:MetaspaceSize； -XX:MaxMetaspaceSize<br>&nbsp;&nbsp;&nbsp;&nbsp;jdk1.8 以后大小就只受本机总内存的限制（如果不设置参数的话）</p>
+<h2 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;运行时常量池（Runtime Constant Pool）是每一个类或接口的常量池（Constant_Pool）的运行时表示形式，它包括了若干种不同的常量：从编 译期可知的数值字面量到必须运行期解析后才能获得的方法或字段引用。<br>&nbsp;&nbsp;&nbsp;&nbsp;运行时常量池是方法区的一部分。运行时常量池相对于 Class 常量池的另外一个重要特征是具备动态性（Class 常量池在类加载章节会具体讲）。</p>
+<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;堆是 JVM 上最大的内存区域，我们申请的几乎所有的对象，都是在这里存储的。我们常说的垃圾回收，操作的对象就是堆。<br>&nbsp;&nbsp;&nbsp;&nbsp;堆空间一般是程序启动时，就申请了，但是并不一定会全部使用。堆一般设置成可伸缩的。<br>&nbsp;&nbsp;&nbsp;&nbsp;随着对象的频繁创建，堆空间占用的越来越多，就需要不定期的对不再使用的对象进行回收。这个在 Java 中，就叫作 GC（Garbage Collection）。 那一个对象创建的时候，到底是在堆上分配，还是在栈上分配呢？这和两个方面有关：对象的类型和在 Java 类中存在的位置。 Java 的对象可以分为基本数据类型和普通对象。<br>&nbsp;&nbsp;&nbsp;&nbsp;对于普通对象来说，JVM 会首先在堆上创建对象，然后在其他地方使用的其实是它的引用。比如，把这个引用保存在虚拟机栈的局部变量表中。 对于基本数据类型来说（byte、short、int、long、float、double、char)，有两种情况。 当你在方法体内声明了基本数据类型的对象，它就会在栈上直接分配。其他情况，都是在堆上分配。<br><strong>堆大小参数：</strong><br>&nbsp;&nbsp;&nbsp;&nbsp;-Xms：堆的最小值；<br>&nbsp;&nbsp;&nbsp;&nbsp;-Xmx：堆的最大值；<br>&nbsp;&nbsp;&nbsp;&nbsp;-Xmn：新生代的大小；<br>&nbsp;&nbsp;&nbsp;&nbsp;-XX:NewSize；新生代最小值；<br>&nbsp;&nbsp;&nbsp;-XX:MaxNewSize：新生代最大值；</p>
+<h2 id="直接内存（堆外内存）"><a href="#直接内存（堆外内存）" class="headerlink" title="直接内存（堆外内存）"></a>直接内存（堆外内存）</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;直接内存有一种更加科学的叫法，堆外内存。 JVM 在运行时，会从操作系统申请大块的堆内存，进行数据的存储；同时还有虚拟机栈、本地方法栈和程序计数器，这块称之为栈区。操作系统剩余的 内存也就是堆外内存。<br>&nbsp;&nbsp;&nbsp;&nbsp;它不是虚拟机运行时数据区的一部分，也不是 java 虚拟机规范中定义的内存区域；如果使用了 NIO,这块区域会被频繁使用，在 java 堆内可以用 directByteBuffer 对象直接引用并操作； 这块内存不受 java 堆大小限制，但受本机总内存的限制，可以通过-XX:MaxDirectMemorySize 来设置（默认与堆内存最大值一样），所以也会出现 OOM 异常。</p>
 ]]></content>
       <categories>
         <category>JVM</category>
+      </categories>
+      <tags>
+        <tag>导航</tag>
+        <tag>分享</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>深入理解Java内存区域</title>
+    <url>/jvm_02/</url>
+    <content><![CDATA[<h1 id="深入理解-JVM-的内存区域"><a href="#深入理解-JVM-的内存区域" class="headerlink" title="深入理解 JVM 的内存区域"></a>深入理解 JVM 的内存区域</h1><h2 id="深入理解运行时数据区"><a href="#深入理解运行时数据区" class="headerlink" title="深入理解运行时数据区"></a>深入理解运行时数据区</h2><p>代码示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * -Xms30m -Xmx30m -Xss1m -XX:MaxMetaspaceSize&#x3D;30m -XX:+UseConcMarkSweepGC</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class JVMObject &#123;</span><br><span class="line"></span><br><span class="line">    public static String MAN_TYPE &#x3D; &quot;man&quot;;</span><br><span class="line">    public static String WOMAN_TYPE &#x3D; &quot;woman&quot;;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws InterruptedException &#123;</span><br><span class="line"></span><br><span class="line">        Teacher t1 &#x3D; new Teacher();</span><br><span class="line">        t1.setName(&quot;tao&quot;);</span><br><span class="line">        t1.setAge(18);</span><br><span class="line">        t1.setSexType(MAN_TYPE);</span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">        Teacher t2 &#x3D; new Teacher();</span><br><span class="line">        t2.setAge(26);</span><br><span class="line">        t2.setName(&quot;peng&quot;);</span><br><span class="line">        t2.setSexType(WOMAN_TYPE);</span><br><span class="line"></span><br><span class="line">        Thread.sleep(Integer.MAX_VALUE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Teacher &#123;</span><br><span class="line"></span><br><span class="line">    String name;</span><br><span class="line">    String sexType;</span><br><span class="line">    int age;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public String getName() &#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setName(String name) &#123;</span><br><span class="line">        this.name &#x3D; name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getSexType() &#123;</span><br><span class="line">        return sexType;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setSexType(String sexType) &#123;</span><br><span class="line">        this.sexType &#x3D; sexType;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getAge() &#123;</span><br><span class="line">        return age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setAge(int age) &#123;</span><br><span class="line">        this.age &#x3D; age;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>JVM 向操作系统申请内存：<br>&nbsp;&nbsp;&nbsp;&nbsp;JVM 第一步就是通过配置参数或者默认配置参数向操作系统申请内存空间，根据内存大小找到具体的内存分配表，然后把内存段的起始地址和终止地 址分配给 JVM，接下来 JVM 就进行内部分配。</li>
+<li>JVM 获得内存空间后，会根据配置参数分配堆、栈以及方法区的内存大小<br>&nbsp;&nbsp;&nbsp;&nbsp;-Xms30m -Xmx30m -Xss1m -XX:MaxMetaspaceSize=30m</li>
+<li>类加载（类加载的细节后续章节会讲）：<br>&nbsp;&nbsp;&nbsp;&nbsp;这里主要是把 class 放入方法区、还有 class 中的静态变量和常量也要放入方法区</li>
+<li>执行方法及创建对象：<br>&nbsp;&nbsp;&nbsp;&nbsp;启动 main 线程，执行 main 方法，开始执行第一行代码。此时堆内存中会创建一个 student 对象，对象引用 student 就存放在栈中。 后续代码中遇到 new 关键字，会再创建一个 student 对象，对象引用 student 就存放在栈中<br><img src="/images/run_data_3.jpg"></li>
+</ol>
+<p><strong>JVM 在操作系统上启动，申请内存，先进行运行时数据区的初始化，然后把类加载到方法区，最后执行方法。 方法的执行和退出过程在内存上的体现上就是虚拟机栈中栈帧的入栈和出栈。 同时在方法的执行过程中创建的对象一般情况下都是放在堆中，最后堆中的对象也是需要进行垃圾回收清理的。</strong></p>
+<h2 id="从底层深入理解运行时数据区"><a href="#从底层深入理解运行时数据区" class="headerlink" title="从底层深入理解运行时数据区"></a>从底层深入理解运行时数据区</h2><h2 id="堆空间分代划分"><a href="#堆空间分代划分" class="headerlink" title="堆空间分代划分"></a>堆空间分代划分</h2><p>堆被划分为新生代和老年代（Tenured），新生代又被进一步划分为 Eden 和 Survivor 区，最后 Survivor 由 From Survivor 和 To Survivor 组成。 （先需要有概念，后续对象分配和垃圾回收会细讲这块）<br><img src="/images/run_data_4.jpg"><br><strong>GC 概念</strong><br>GC- Garbage Collection 垃圾回收，在 JVM 中是自动化的垃圾回收机制，我们一般不用去关注，在 JVM 中 GC 的重要区域是堆空间。 我们也可以通过一些额外方式主动发起它，比如 System.gc(),主动发起。</p>
+<p><strong>JHSDB 工具</strong><br>JHSDB 是一款基于服务性代理实现的进程外调试工具。服务性代理是 HotSpot 虚拟机中一组用于映射 Java 虚拟机运行信息的，主要基于 Java 语言实现的 API 集合。</p>
+<p><strong>JDK1.8 的开启方式</strong><br>开启 HSDB 工具 Jdk1.8 启动 JHSDB 的时候必须将 sawindbg.dll（一般会在 JDK 的目录下）复制到对应目录的 jre 下(注意在 win 上安装了 JDK1.8 后往往同级目录下有一个 jre 的目录)<br>然后到目录：C:\Program Files\Java\jdk1.8.0_101\lib 进入命令行，执行 java -cp .\sa-jdi.jar sun.jvm.hotspot.HSDB<br><img src="/images/run_data_5.jpg"></p>
+<h2 id="代码改造"><a href="#代码改造" class="headerlink" title="代码改造"></a>代码改造</h2><p>VM 参数加入：<br>-XX:+UseConcMarkSweepGC<br>-XX:-UseCompressedOops</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * -Xms30m -Xmx30m -Xss1m -XX:MaxMetaspaceSize&#x3D;30m -XX:+UseConcMarkSweepGC XX:-UseCompressedOops</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class JVMObject &#123;</span><br><span class="line"></span><br><span class="line">    public static String MAN_TYPE &#x3D; &quot;man&quot;;</span><br><span class="line">    public static String WOMAN_TYPE &#x3D; &quot;woman&quot;;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws InterruptedException &#123;</span><br><span class="line"></span><br><span class="line">        Teacher t1 &#x3D; new Teacher();</span><br><span class="line">        t1.setName(&quot;tao&quot;);</span><br><span class="line">        t1.setAge(18);</span><br><span class="line">        t1.setSexType(MAN_TYPE);</span><br><span class="line"></span><br><span class="line">        for (int i &#x3D; 0; i &lt; 15; i++) &#123;</span><br><span class="line">            System.gc(); &#x2F;&#x2F;进行15次垃圾回收</span><br><span class="line">        &#125;</span><br><span class="line">        Teacher t2 &#x3D; new Teacher();</span><br><span class="line">        t2.setAge(26);</span><br><span class="line">        t2.setName(&quot;peng&quot;);</span><br><span class="line">        t2.setSexType(WOMAN_TYPE);</span><br><span class="line"></span><br><span class="line">        Thread.sleep(Integer.MAX_VALUE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Teacher &#123;</span><br><span class="line"></span><br><span class="line">    String name;</span><br><span class="line">    String sexType;</span><br><span class="line">    int age;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public String getName() &#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setName(String name) &#123;</span><br><span class="line">        this.name &#x3D; name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getSexType() &#123;</span><br><span class="line">        return sexType;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setSexType(String sexType) &#123;</span><br><span class="line">        this.sexType &#x3D; sexType;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getAge() &#123;</span><br><span class="line">        return age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setAge(int age) &#123;</span><br><span class="line">        this.age &#x3D; age;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="JHSDB-中查看对象"><a href="#JHSDB-中查看对象" class="headerlink" title="JHSDB 中查看对象"></a>JHSDB 中查看对象</h2><p>因为 JVM 启动有一个进程，需要借助一个命令 jps 查找到对应程序的进程<br><img src="/images/run_data_6.png"><br>在 JHSDB 工具中 attach 上去<br><img src="/images/run_data_7.jpg"> <img src="/images/run_data_8.jpg"> <img src="/images/run_data_9.jpg"><br><strong>JHSDB 中查看对象</strong></p>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+      <tags>
+        <tag>导航</tag>
+        <tag>分享</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>单例模式</title>
+    <url>/singleton/</url>
+    <content><![CDATA[<h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>单例模式（Singleton Pattern）是 Java 中最简单的设计模式之一。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。</p>
+<p>这种模式涉及到一个单一的类，该类负责创建自己的对象，同时确保只有单个对象被创建。这个类提供了一种访问其唯一的对象的方式，可以直接访问，不需要实例化该类的对象。</p>
+<p>注意:</p>
+<ul>
+<li>单例类只能有一个实例。</li>
+<li>单例类必须自己创建自己的唯一实例。</li>
+<li>单例类必须给所有其他对象提供这一实例。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">	&#x2F;**</span><br><span class="line"> * 饿汉式</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class Singleton &#123;</span><br><span class="line"></span><br><span class="line">    private static Singleton instance &#x3D; new Singleton();</span><br><span class="line"></span><br><span class="line">    private Singleton()&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    public static Singleton getInstance()&#123;</span><br><span class="line">        return  instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">	&#x2F;**</span><br><span class="line"> * 懒汉式</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class Singleton &#123;</span><br><span class="line"></span><br><span class="line">    private static Singleton instance &#x3D; null;</span><br><span class="line">    </span><br><span class="line">    private Singleton()&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public static synchronized Singleton getInstance()&#123;</span><br><span class="line">        </span><br><span class="line">        if (instance &#x3D;&#x3D; null)&#123;</span><br><span class="line">            instance &#x3D; new Singleton();</span><br><span class="line">        &#125;</span><br><span class="line">        return instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Java设计模式</category>
       </categories>
       <tags>
         <tag>导航</tag>
@@ -210,28 +262,6 @@
 ]]></content>
       <categories>
         <category>美句赏析</category>
-      </categories>
-      <tags>
-        <tag>导航</tag>
-        <tag>分享</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>单例模式</title>
-    <url>/singleton/</url>
-    <content><![CDATA[<h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>单例模式（Singleton Pattern）是 Java 中最简单的设计模式之一。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。</p>
-<p>这种模式涉及到一个单一的类，该类负责创建自己的对象，同时确保只有单个对象被创建。这个类提供了一种访问其唯一的对象的方式，可以直接访问，不需要实例化该类的对象。</p>
-<p>注意:</p>
-<ul>
-<li>单例类只能有一个实例。</li>
-<li>单例类必须自己创建自己的唯一实例。</li>
-<li>单例类必须给所有其他对象提供这一实例。</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">	&#x2F;**</span><br><span class="line"> * 饿汉式</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class Singleton &#123;</span><br><span class="line"></span><br><span class="line">    private static Singleton instance &#x3D; new Singleton();</span><br><span class="line"></span><br><span class="line">    private Singleton()&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    public static Singleton getInstance()&#123;</span><br><span class="line">        return  instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">	&#x2F;**</span><br><span class="line"> * 懒汉式</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class Singleton &#123;</span><br><span class="line"></span><br><span class="line">    private static Singleton instance &#x3D; null;</span><br><span class="line">    </span><br><span class="line">    private Singleton()&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public static synchronized Singleton getInstance()&#123;</span><br><span class="line">        </span><br><span class="line">        if (instance &#x3D;&#x3D; null)&#123;</span><br><span class="line">            instance &#x3D; new Singleton();</span><br><span class="line">        &#125;</span><br><span class="line">        return instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Java设计模式</category>
       </categories>
       <tags>
         <tag>导航</tag>

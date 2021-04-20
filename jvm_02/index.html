@@ -79,21 +79,27 @@
 
 
 
-<meta name="description" content="从明天起，做一个幸福的人     喂马，劈柴，周游世界     从明天起，关心粮食和蔬菜     我有一所房子，面朝大海，春暖花开">
+<meta name="description" content="深入理解 JVM 的内存区域深入理解运行时数据区代码示例： 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859&#x2F;** * -Xms30m -Xmx30m -Xss1m -XX:MaxMetaspaceSize&#x3D;3">
 <meta property="og:type" content="article">
-<meta property="og:title" content="面朝大海,春暖花开">
-<meta property="og:url" content="http://example.com/first_blog/index.html">
+<meta property="og:title" content="深入理解Java内存区域">
+<meta property="og:url" content="http://example.com/jvm_02/index.html">
 <meta property="og:site_name" content="以梦为马,不负韶华">
-<meta property="og:description" content="从明天起，做一个幸福的人     喂马，劈柴，周游世界     从明天起，关心粮食和蔬菜     我有一所房子，面朝大海，春暖花开">
+<meta property="og:description" content="深入理解 JVM 的内存区域深入理解运行时数据区代码示例： 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859&#x2F;** * -Xms30m -Xmx30m -Xss1m -XX:MaxMetaspaceSize&#x3D;3">
 <meta property="og:locale">
-<meta property="og:image" content="https://up.enterdesk.com/edpic_source/59/f1/47/59f14794f3ddbf87b53744b3b26009f5.jpg">
-<meta property="article:published_time" content="2021-03-12T08:30:50.000Z">
-<meta property="article:modified_time" content="2021-03-13T14:12:33.460Z">
+<meta property="og:image" content="http://example.com/images/run_data_3.jpg">
+<meta property="og:image" content="http://example.com/images/run_data_4.jpg">
+<meta property="og:image" content="http://example.com/images/run_data_5.jpg">
+<meta property="og:image" content="http://example.com/images/run_data_6.png">
+<meta property="og:image" content="http://example.com/images/run_data_7.jpg">
+<meta property="og:image" content="http://example.com/images/run_data_8.jpg">
+<meta property="og:image" content="http://example.com/images/run_data_9.jpg">
+<meta property="article:published_time" content="2021-04-19T12:30:50.000Z">
+<meta property="article:modified_time" content="2021-04-20T14:30:02.946Z">
 <meta property="article:author" content="小涛博客">
 <meta property="article:tag" content="导航">
 <meta property="article:tag" content="分享">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://up.enterdesk.com/edpic_source/59/f1/47/59f14794f3ddbf87b53744b3b26009f5.jpg">
+<meta name="twitter:image" content="http://example.com/images/run_data_3.jpg">
 
 
 
@@ -123,13 +129,13 @@
 
 
 
-  <link rel="canonical" href="http://example.com/first_blog/"/>
+  <link rel="canonical" href="http://example.com/jvm_02/"/>
 
 
 
 
 
-  <title>面朝大海,春暖花开 | 以梦为马,不负韶华</title>
+  <title>深入理解Java内存区域 | 以梦为马,不负韶华</title>
   
 
 
@@ -300,7 +306,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/first_blog/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/jvm_02/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -317,7 +323,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">面朝大海,春暖花开</h1>
+          <h1 class="post-title" itemprop="name headline">深入理解Java内存区域</h1>
         
 
         <div class="post-meta">
@@ -329,8 +335,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-12T16:30:50+08:00">
-                2021-03-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-19T20:30:50+08:00">
+                2021-04-19
               </time>
             
 
@@ -352,8 +358,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BE%8E%E5%8F%A5%E8%B5%8F%E6%9E%90/" itemprop="url" rel="index">
-                    <span itemprop="name">美句赏析</span>
+                  <a href="/categories/JVM/" itemprop="url" rel="index">
+                    <span itemprop="name">JVM</span>
                   </a>
                 </span>
 
@@ -370,8 +376,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/first_blog/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/first_blog/" itemprop="commentCount"></span>
+                <a href="/jvm_02/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/jvm_02/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -404,28 +410,21 @@
       
 
       
-        <img src="https://up.enterdesk.com/edpic_source/59/f1/47/59f14794f3ddbf87b53744b3b26009f5.jpg" width="600" height="160" alt="图片名称" align="center">
-
-<center>
-<font size="4">
-    从明天起，做一个幸福的人<br>
-    喂马，劈柴，周游世界<br>
-    从明天起，关心粮食和蔬菜<br>
-    我有一所房子，面朝大海，春暖花开<br>
-    <span id="more"></span>
-    从明天起，和每一个亲人通信<br>
-    告诉他们我的幸福<br>
-    那幸福的闪电告诉我的<br>
-    我将告诉每一个人<br>
-    给每一条河每一座山取一个温暖的名字<br>
-    陌生人，我也为你祝福<br>
-    愿你有一个灿烂的前程<br>
-    愿你有情人终成眷属<br>
-    愿你在尘世获得幸福<br>
-    我只愿面朝大海，春暖花开<br>
-</font>
-</center>
-
+        <h1 id="深入理解-JVM-的内存区域"><a href="#深入理解-JVM-的内存区域" class="headerlink" title="深入理解 JVM 的内存区域"></a>深入理解 JVM 的内存区域</h1><h2 id="深入理解运行时数据区"><a href="#深入理解运行时数据区" class="headerlink" title="深入理解运行时数据区"></a>深入理解运行时数据区</h2><p>代码示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * -Xms30m -Xmx30m -Xss1m -XX:MaxMetaspaceSize&#x3D;30m -XX:+UseConcMarkSweepGC</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class JVMObject &#123;</span><br><span class="line"></span><br><span class="line">    public static String MAN_TYPE &#x3D; &quot;man&quot;;</span><br><span class="line">    public static String WOMAN_TYPE &#x3D; &quot;woman&quot;;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws InterruptedException &#123;</span><br><span class="line"></span><br><span class="line">        Teacher t1 &#x3D; new Teacher();</span><br><span class="line">        t1.setName(&quot;tao&quot;);</span><br><span class="line">        t1.setAge(18);</span><br><span class="line">        t1.setSexType(MAN_TYPE);</span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">        Teacher t2 &#x3D; new Teacher();</span><br><span class="line">        t2.setAge(26);</span><br><span class="line">        t2.setName(&quot;peng&quot;);</span><br><span class="line">        t2.setSexType(WOMAN_TYPE);</span><br><span class="line"></span><br><span class="line">        Thread.sleep(Integer.MAX_VALUE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Teacher &#123;</span><br><span class="line"></span><br><span class="line">    String name;</span><br><span class="line">    String sexType;</span><br><span class="line">    int age;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public String getName() &#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setName(String name) &#123;</span><br><span class="line">        this.name &#x3D; name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getSexType() &#123;</span><br><span class="line">        return sexType;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setSexType(String sexType) &#123;</span><br><span class="line">        this.sexType &#x3D; sexType;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getAge() &#123;</span><br><span class="line">        return age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setAge(int age) &#123;</span><br><span class="line">        this.age &#x3D; age;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>JVM 向操作系统申请内存：<br>&nbsp;&nbsp;&nbsp;&nbsp;JVM 第一步就是通过配置参数或者默认配置参数向操作系统申请内存空间，根据内存大小找到具体的内存分配表，然后把内存段的起始地址和终止地 址分配给 JVM，接下来 JVM 就进行内部分配。</li>
+<li>JVM 获得内存空间后，会根据配置参数分配堆、栈以及方法区的内存大小<br>&nbsp;&nbsp;&nbsp;&nbsp;-Xms30m -Xmx30m -Xss1m -XX:MaxMetaspaceSize=30m</li>
+<li>类加载（类加载的细节后续章节会讲）：<br>&nbsp;&nbsp;&nbsp;&nbsp;这里主要是把 class 放入方法区、还有 class 中的静态变量和常量也要放入方法区</li>
+<li>执行方法及创建对象：<br>&nbsp;&nbsp;&nbsp;&nbsp;启动 main 线程，执行 main 方法，开始执行第一行代码。此时堆内存中会创建一个 student 对象，对象引用 student 就存放在栈中。 后续代码中遇到 new 关键字，会再创建一个 student 对象，对象引用 student 就存放在栈中<br><img src="/images/run_data_3.jpg"></li>
+</ol>
+<p><strong>JVM 在操作系统上启动，申请内存，先进行运行时数据区的初始化，然后把类加载到方法区，最后执行方法。 方法的执行和退出过程在内存上的体现上就是虚拟机栈中栈帧的入栈和出栈。 同时在方法的执行过程中创建的对象一般情况下都是放在堆中，最后堆中的对象也是需要进行垃圾回收清理的。</strong></p>
+<h2 id="从底层深入理解运行时数据区"><a href="#从底层深入理解运行时数据区" class="headerlink" title="从底层深入理解运行时数据区"></a>从底层深入理解运行时数据区</h2><h2 id="堆空间分代划分"><a href="#堆空间分代划分" class="headerlink" title="堆空间分代划分"></a>堆空间分代划分</h2><p>堆被划分为新生代和老年代（Tenured），新生代又被进一步划分为 Eden 和 Survivor 区，最后 Survivor 由 From Survivor 和 To Survivor 组成。 （先需要有概念，后续对象分配和垃圾回收会细讲这块）<br><img src="/images/run_data_4.jpg"><br><strong>GC 概念</strong><br>GC- Garbage Collection 垃圾回收，在 JVM 中是自动化的垃圾回收机制，我们一般不用去关注，在 JVM 中 GC 的重要区域是堆空间。 我们也可以通过一些额外方式主动发起它，比如 System.gc(),主动发起。</p>
+<p><strong>JHSDB 工具</strong><br>JHSDB 是一款基于服务性代理实现的进程外调试工具。服务性代理是 HotSpot 虚拟机中一组用于映射 Java 虚拟机运行信息的，主要基于 Java 语言实现的 API 集合。</p>
+<p><strong>JDK1.8 的开启方式</strong><br>开启 HSDB 工具 Jdk1.8 启动 JHSDB 的时候必须将 sawindbg.dll（一般会在 JDK 的目录下）复制到对应目录的 jre 下(注意在 win 上安装了 JDK1.8 后往往同级目录下有一个 jre 的目录)<br>然后到目录：C:\Program Files\Java\jdk1.8.0_101\lib 进入命令行，执行 java -cp .\sa-jdi.jar sun.jvm.hotspot.HSDB<br><img src="/images/run_data_5.jpg"></p>
+<h2 id="代码改造"><a href="#代码改造" class="headerlink" title="代码改造"></a>代码改造</h2><p>VM 参数加入：<br>-XX:+UseConcMarkSweepGC<br>-XX:-UseCompressedOops</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * -Xms30m -Xmx30m -Xss1m -XX:MaxMetaspaceSize&#x3D;30m -XX:+UseConcMarkSweepGC XX:-UseCompressedOops</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class JVMObject &#123;</span><br><span class="line"></span><br><span class="line">    public static String MAN_TYPE &#x3D; &quot;man&quot;;</span><br><span class="line">    public static String WOMAN_TYPE &#x3D; &quot;woman&quot;;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws InterruptedException &#123;</span><br><span class="line"></span><br><span class="line">        Teacher t1 &#x3D; new Teacher();</span><br><span class="line">        t1.setName(&quot;tao&quot;);</span><br><span class="line">        t1.setAge(18);</span><br><span class="line">        t1.setSexType(MAN_TYPE);</span><br><span class="line"></span><br><span class="line">        for (int i &#x3D; 0; i &lt; 15; i++) &#123;</span><br><span class="line">            System.gc(); &#x2F;&#x2F;进行15次垃圾回收</span><br><span class="line">        &#125;</span><br><span class="line">        Teacher t2 &#x3D; new Teacher();</span><br><span class="line">        t2.setAge(26);</span><br><span class="line">        t2.setName(&quot;peng&quot;);</span><br><span class="line">        t2.setSexType(WOMAN_TYPE);</span><br><span class="line"></span><br><span class="line">        Thread.sleep(Integer.MAX_VALUE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Teacher &#123;</span><br><span class="line"></span><br><span class="line">    String name;</span><br><span class="line">    String sexType;</span><br><span class="line">    int age;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public String getName() &#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setName(String name) &#123;</span><br><span class="line">        this.name &#x3D; name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getSexType() &#123;</span><br><span class="line">        return sexType;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setSexType(String sexType) &#123;</span><br><span class="line">        this.sexType &#x3D; sexType;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getAge() &#123;</span><br><span class="line">        return age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setAge(int age) &#123;</span><br><span class="line">        this.age &#x3D; age;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="JHSDB-中查看对象"><a href="#JHSDB-中查看对象" class="headerlink" title="JHSDB 中查看对象"></a>JHSDB 中查看对象</h2><p>因为 JVM 启动有一个进程，需要借助一个命令 jps 查找到对应程序的进程<br><img src="/images/run_data_6.png"><br>在 JHSDB 工具中 attach 上去<br><img src="/images/run_data_7.jpg"> <img src="/images/run_data_8.jpg"> <img src="/images/run_data_9.jpg"><br><strong>JHSDB 中查看对象</strong></p>
 
       
     </div>
@@ -491,15 +490,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/singleton/" rel="next" title="单例模式">
+                <i class="fa fa-chevron-left"></i> 单例模式
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/mylife/" rel="prev" title="你好,旧时光">
-                你好,旧时光 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -554,8 +553,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -635,6 +643,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-JVM-%E7%9A%84%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F"><span class="nav-number">1.</span> <span class="nav-text">深入理解 JVM 的内存区域</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA"><span class="nav-number">1.1.</span> <span class="nav-text">深入理解运行时数据区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E5%BA%95%E5%B1%82%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA"><span class="nav-number">1.2.</span> <span class="nav-text">从底层深入理解运行时数据区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A0%86%E7%A9%BA%E9%97%B4%E5%88%86%E4%BB%A3%E5%88%92%E5%88%86"><span class="nav-number">1.3.</span> <span class="nav-text">堆空间分代划分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%94%B9%E9%80%A0"><span class="nav-number">1.4.</span> <span class="nav-text">代码改造</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JHSDB-%E4%B8%AD%E6%9F%A5%E7%9C%8B%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.5.</span> <span class="nav-text">JHSDB 中查看对象</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
